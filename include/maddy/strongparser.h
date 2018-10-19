@@ -41,10 +41,13 @@ public:
   void
   Parse(std::string& line) override
   {
-    static std::regex re("(?!.*`.*|.*<code>.*)\\*\\*(?!.*`.*|.*<\\/code>.*)([^\\*\\*]*)\\*\\*(?!.*`.*|.*<\\/code>.*)");
+    static std::vector<std::regex> res;
+    res.push_back(std::regex{"(?!.*`.*|.*<code>.*)\\*\\*(?!.*`.*|.*<\\/code>.*)([^\\*\\*]*)\\*\\*(?!.*`.*|.*<\\/code>.*)"});
+    res.push_back(std::regex{"(?!.*`.*|.*<code>.*)\\_\\_(?!.*`.*|.*<\\/code>.*)([^\\_\\_]*)\\_\\_(?!.*`.*|.*<\\/code>.*)"});
     static std::string replacement = "<strong>$1</strong>";
-
-    line = std::regex_replace(line, re, replacement);
+    for(const auto& re : res) {
+      line = std::regex_replace(line, re, replacement);
+    }
   }
 }; // class StrongParser
 
